@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Township Tale Server List</title>
+<style>
+  body {
+    background: #000;
+    color: #0f0;
+    font-family: monospace;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 2em;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 50%, 100% { color: #0f0; }
+    25%, 75% { color: #000; }
+  }
+  .legend {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .server-list {
+    border: 2px solid #0f0;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 0 20px #0f0;
+  }
+  .server {
+    padding: 8px;
+    border-bottom: 1px solid #0f0;
+  }
+  .server:last-child {
+    border-bottom: none;
+  }
+  .music-control {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .music-control button {
+    background: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: monospace;
+  }
+  .music-control button:hover {
+    background: #0f0;
+    color: #000;
+  }
+</style>
+</head>
+<body>
+
+<h1>A Township Tale Servers</h1>
+
+<div class="music-control">
+  <button id="musicButton">Mute Music</button>
+</div>
+
+<div class="legend">
+  <strong>Griefed = <span style="color:red">Red</span></strong> | 
+  <strong>Untouched = <span style="color:green">Green</span></strong>
+</div>
+
+<div class="server-list" id="serverList"></div>
+
+<!-- Audio Element -->
+<audio id="bgMusic" loop>
+  <source src="1912.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+const griefedServers = [
+  "Doki Doki",
+  "NEW VERY GOOD SERVER",
+  "Muleakz's World",
+  "an att server (PCVR)",
+  "MoistFriend",
+  "valhalla",
+  "An adventure tale",
+  "A Fresh Start"
+];
+
+const servers = [
+  { name: "Adventurers Guild (RP)", region: "USA" },
+  { name: "valhalla", region: "USA" },
+  { name: "landos cool funpo", region: "USA" },
+  { name: "a truetale", region: "USA" },
+  { name: "A Highcliffe Tale", region: "USA" },
+  { name: "A Fresh Start", region: "USA" },
+  { name: "MoistFriend", region: "EU" },
+  { name: "Fox,s Township", region: "USA" },
+  { name: "OverRan", region: "USA" },
+  { name: "an att server (PCVR)", region: "EU" },
+  { name: "An adventure tale", region: "USA" },
+  { name: "Muleakz's World", region: "EU" },
+  { name: "Escondido, CA", region: "USA" },
+  { name: "the land of township", region: "USA" },
+  { name: "I regret my decisions on making this server", region: "USA" },
+  { name: "War for township", region: "EU" },
+  { name: "A Miner's Tale", region: "USA" },
+  { name: "lieghtons little town", region: "EU" },
+  { name: "NEW VERY GOOD SERVER", region: "USA" },
+  { name: "Doki Doki", region: "USA" },
+  { name: "The Landfill", region: "USA" }
+];
+
+// Fancy Unicode conversion
+function toFancy(text) {
+  const fancyMap = {
+    'a':'𝓪','b':'𝓫','c':'𝓬','d':'𝓭','e':'𝓮','f':'𝓯','g':'𝓰','h':'𝓱','i':'𝓲','j':'𝓳','k':'𝓴','l':'𝓵','m':'𝓶',
+    'n':'𝓷','o':'𝓸','p':'𝓹','q':'𝓺','r':'𝓻','s':'𝓼','t':'𝓽','u':'𝓾','v':'𝓿','w':'𝔀','x':'𝔁','y':'𝔂','z':'𝔃',
+    'A':'𝓐','B':'𝓑','C':'𝓒','D':'𝓓','E':'𝓔','F':'𝓕','G':'𝓖','H':'𝓗','I':'𝓘','J':'𝓙','K':'𝓚','L':'𝓛','M':'𝓜',
+    'N':'𝓝','O':'𝓞','P':'𝓟','Q':'𝓠','R':'𝓡','S':'𝓢','T':'𝓣','U':'𝓤','V':'𝓥','W':'𝓦','X':'𝓧','Y':'𝓨','Z':'𝓩',
+    '0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9',' ':' '
+  };
+  return text.split('').map(c => fancyMap[c] || c).join('');
+}
+
+function renderServers() {
+  const listEl = document.getElementById('serverList');
+  listEl.innerHTML = '';
+  servers.forEach(server => {
+    const el = document.createElement('div');
+    el.className = 'server';
+    const color = griefedServers.some(g => g.toLowerCase() === server.name.toLowerCase()) ? 'red' : 'green';
+    el.innerHTML = `<span style="color:${color}">${toFancy(server.name)} • ${toFancy(server.region)}</span>`;
+    listEl.appendChild(el);
+  });
+}
+
+renderServers();
+
+// Music Control
+const music = document.getElementById('bgMusic');
+const musicButton = document.getElementById('musicButton');
+let musicStarted = false;
+
+// Start music after first user interaction
+document.body.addEventListener('click', () => {
+  if (!musicStarted) {
+    music.play().catch(() => {}); // handle autoplay errors silently
+    musicStarted = true;
+  }
+});
+
+// Mute/unmute button
+musicButton.addEventListener('click', () => {
+  music.muted = !music.muted;
+  musicButton.textContent = music.muted ? "Unmute Music" : "Mute Music";
+});
+</script>
+
+</body>
+</html>
